@@ -1,1 +1,3 @@
-Downloaded at: https://sourceforge.net/projects/p7zip/files/p7zip/16.02/
+Unmodified 7-Zip 26.05 Linux console executables (2026-10-21).
+https://www.7-zip.org/download.html
+Archive URLs and SHA-256 pins: ../../../../dependencies.lock.json

@@ -82,8 +82,8 @@ void LegacyFTPThread::Run() {
             curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
             curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
             curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-            curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, LegacyDownloadThread::ProgressUpdated);
-            curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, &progress);
+            curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, LegacyDownloadThread::ProgressUpdated);
+            curl_easy_setopt(curl, CURLOPT_XFERINFODATA, &progress);
 
 #if defined unix || defined __unix__ || defined __linux__ || defined __unix || defined __APPLE__ || defined __darwin__
             // Use our own ca-bundle on unix like systems
@@ -140,5 +140,5 @@ void LegacyFTPThread::Run() {
 
 size_t LegacyFTPThread::UploadFTP(void* buffer, size_t size, size_t nmemb, void* userdata) {
     // Read file and return size
-    return fread(buffer, size, nmemb, (FILE*)userdata);
+    return fread(buffer, 1, size * nmemb, (FILE*)userdata);
 }

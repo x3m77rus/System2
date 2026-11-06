@@ -1,0 +1,40 @@
+{
+  "reviewed": "2026-10-26",
+  "sources": {
+    "openssl": {
+      "version": "3.5.9",
+      "url": "https://github.com/openssl/openssl/releases/download/openssl-3.5.9/openssl-3.5.9.tar.gz",
+      "sha256": "603f5602e2eef00d77fbd429d34dcd5822bb301757a1bc9cdb24c670f1eb859a"
+    },
+    "zlib": {
+      "version": "1.3.2",
+      "url": "https://zlib.net/fossils/zlib-1.3.2.tar.gz",
+      "sha256": "bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16"
+    },
+    "libunistring": {
+      "version": "1.5",
+      "url": "https://ftp.gnu.org/gnu/libunistring/libunistring-1.5.tar.xz",
+      "sha256": "fe89007a8a414ae4790b816b86859e877d3ab135db3c37f06541ff7e85ac344b"
+    },
+    "libidn2": {
+      "version": "2.3.8",
+      "url": "https://ftp.gnu.org/gnu/libidn/libidn2-2.3.8.tar.gz",
+      "sha256": "f557911bf6171621e1f72ff35f5b1825bb35b52ed45325dcdee931e5d3c0787a"
+    },
+    "curl": {
+      "version": "8.23.0",
+      "url": "https://curl.se/download/curl-8.23.0.tar.xz",
+      "sha256": "8dadd7d2536a314f982ad05a651b713f426bf7d02cc2c76cffb9796f2218e6c5"
+    },
+    "7zip-x86": {
+      "version": "26.05",
+      "url": "https://github.com/ip7z/7zip/releases/download/26.05/7z2605-linux-x86.tar.xz",
+      "sha256": "e8d8b762a4ee97fffa36a35b9831bbd0a7bb4645e5fafad839f9c22e297587a8"
+    },
+    "7zip-x64": {
+      "version": "26.05",
+      "url": "https://github.com/ip7z/7zip/releases/download/26.05/7z2605-linux-x64.tar.xz",
+      "sha256": "22cf82fcc6eb7474f1d5bb4f02c0f8ebd573a718089d6833dc30f8350a3b232e"
+    }
+  }
+}

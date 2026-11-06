@@ -33,6 +33,7 @@ public:
     std::shared_ptr<CallbackFunction_t> callbackFunction;
 
     explicit Callback(std::shared_ptr<CallbackFunction_t> callbackFunction) : callbackFunction(callbackFunction) {}
+    virtual ~Callback() = default;
 
     virtual void Fire() = 0;
     virtual void Abort() {};

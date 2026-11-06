@@ -63,8 +63,8 @@ void LegacyDownloadThread::Run() {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, stream);
         curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
         curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-        curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, ProgressUpdated);
-        curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, &progress);
+        curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, ProgressUpdated);
+        curl_easy_setopt(curl, CURLOPT_XFERINFODATA, &progress);
 
 #if defined unix || defined __unix__ || defined __linux__ || defined __unix || defined __APPLE__ || defined __darwin__
         // Use our own ca-bundle on unix like systems
@@ -97,10 +97,10 @@ void LegacyDownloadThread::Run() {
 
 size_t LegacyDownloadThread::WriteFile(void* buffer, size_t size, size_t nmemb, void* userdata) {
     // Write to the file
-    return fwrite(buffer, size, nmemb, (FILE*)userdata);
+    return fwrite(buffer, 1, size * nmemb, (FILE*)userdata);
 }
 
-int LegacyDownloadThread::ProgressUpdated(void* data, double dltotal, double dlnow, double ultotal, double ulnow) {
+int LegacyDownloadThread::ProgressUpdated(void* data, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
     ProgressInfo* progress = (ProgressInfo*)data;
 
     if ((dlnow > 0.0 || dltotal > 0.0 || ultotal > 0.0 || ulnow > 0.0) && (system2Extension.GetFrames() != progress->lastFrame)) {

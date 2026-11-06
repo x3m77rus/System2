@@ -174,7 +174,11 @@ std::shared_ptr<CallbackFunction_t> System2Extension::CreateCallbackFunction(IPl
         return nullptr;
     }
 
-    auto plugin = plsys->FindPluginByContext(function->GetParentRuntime()->GetDefaultContext()->GetContext());
+#if defined(SOURCEPAWN_API_VERSION) && SOURCEPAWN_API_VERSION <= 0x0213
+    auto plugin = plsys->FindPluginByContext(function->GetParentContext()->GetContext());
+#else
+    auto plugin = plsys->FindPluginByContext(function->GetParentContext());
+#endif
     if (!plugin) {
         // Plugin is not valid
         return nullptr;

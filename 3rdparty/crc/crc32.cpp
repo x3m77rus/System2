@@ -123,9 +123,9 @@ uint32_t updateCRC32(unsigned char ch, uint32_t crc)
 
 bool crc32file(char *name, uint32_t *crc, long *charcnt)
 {
-      register FILE *fin;
-      register uint32_t oldcrc32;
-      register int c;
+      FILE *fin;
+      uint32_t oldcrc32;
+      int c;
 
       oldcrc32 = 0xFFFFFFFF; *charcnt = 0;
 #ifdef MSDOS
@@ -156,7 +156,7 @@ bool crc32file(char *name, uint32_t *crc, long *charcnt)
 
 uint32_t crc32buf(char *buf, size_t len)
 {
-      register uint32_t oldcrc32;
+      uint32_t oldcrc32;
 
       oldcrc32 = 0xFFFFFFFF;
 

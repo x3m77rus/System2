@@ -127,7 +127,7 @@ size_t RequestThread::WriteData(char* ptr, size_t size, size_t nmemb, void* user
 
     if (dataInfo->file) {
         // Write to the file if any file is opened
-        return fwrite(ptr, size, nmemb, dataInfo->file);
+        return fwrite(ptr, 1, realsize, dataInfo->file);
     } else {
         // Otherwise add data to content
         dataInfo->content.append(ptr, realsize);
@@ -138,10 +138,10 @@ size_t RequestThread::WriteData(char* ptr, size_t size, size_t nmemb, void* user
 
 size_t RequestThread::ReadFile(char* buffer, size_t size, size_t nitems, void* instream) {
     // Just read the content from the file
-    return fread(buffer, size, nitems, (FILE*)instream);
+    return fread(buffer, 1, size * nitems, (FILE*)instream);
 }
 
-size_t RequestThread::ProgressUpdated(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
+int RequestThread::ProgressUpdated(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
     RequestThread* requestThread = static_cast<RequestThread*>(clientp);
 
     if ((dlnow > 0.0 || dltotal > 0.0 || ultotal > 0.0 || ulnow > 0.0) && (system2Extension.GetFrames() != requestThread->lastProgressFrame)) {

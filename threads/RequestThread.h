@@ -46,7 +46,7 @@ public:
 
     static size_t WriteData(char* ptr, size_t size, size_t nmemb, void* userdata);
     static size_t ReadFile(char* buffer, size_t size, size_t nitems, void* instream);
-    static size_t ProgressUpdated(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
+    static int ProgressUpdated(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
 
 protected:
     bool ApplyRequest(CURL* curl, WriteDataInfo& writeData);

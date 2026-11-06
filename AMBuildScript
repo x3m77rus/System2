@@ -1,0 +1,78 @@
+import os
+
+sm = os.path.abspath(builder.options.sm_path)
+deps = os.path.abspath(builder.options.deps_path)
+builder.AddConfigureFile(os.path.join(sm, 'product.version'))
+builder.AddConfigureFile(os.path.join(deps, 'dependencies.lock.json'))
+with open(os.path.join(sm, 'product.version')) as version:
+  if not version.read().strip().startswith(('1.12.', '1.13.')):
+    raise Exception('--sm-path must point to SourceMod 1.12 or 1.13.')
+
+cxx = builder.DetectCxx(target_arch='x86')
+if cxx.target.platform != 'linux':
+  raise Exception('This build supports Linux x86 only.')
+if not cxx.like('gcc'):
+  raise Exception('Use GCC or Clang for Linux x86.')
+cxx.includes += [os.path.join(builder.sourcePath, folder) for folder in [
+  '.', '3rdparty', 'handler', 'legacy', 'legacy/threads',
+  'legacy/threads/callbacks', 'natives', 'sdk', 'threads', 'threads/callbacks',
+]]
+cxx.includes += [os.path.join(sm, folder) for folder in [
+  'public', 'public/amtl', 'public/amtl/amtl', 'sourcepawn/include',
+]]
+cxx.includes += [os.path.join(deps, 'include')]
+cxx.defines += [
+  'POSIX', '_LINUX', 'LINUX', 'CURL_STATICLIB', 'SOURCEMOD_BUILD', 'HAVE_STDINT_H',
+  'stricmp=strcasecmp', '_stricmp=strcasecmp', '_strnicmp=strncasecmp',
+  'strnicmp=strncasecmp', '_snprintf=snprintf', '_vsnprintf=vsnprintf',
+  '_alloca=alloca', 'strcmpi=strcasecmp', 'COMPILER_GCC', '_FILE_OFFSET_BITS=64',
+]
+cxx.cflags += [
+  '-pipe', '-fPIC', '-fno-strict-aliasing', '-fvisibility=hidden',
+  '-Wall', '-Wextra', '-Werror', '-Wno-unused', '-Wno-unused-parameter',
+  '-Wno-switch', '-Wno-parentheses', '-g3',
+]
+cxx.cxxflags += [
+  '-std=c++17', '-fno-exceptions', '-fno-rtti', '-fvisibility-inlines-hidden',
+  '-Wno-overloaded-virtual', '-Wno-non-virtual-dtor',
+]
+if builder.options.enable_debug:
+  cxx.defines += ['DEBUG', '_DEBUG']
+  cxx.cflags += ['-O0']
+elif builder.options.enable_optimize:
+  cxx.defines += ['NDEBUG']
+  cxx.cflags += ['-O2']
+
+binary = cxx.Library('system2.ext')
+binary.sources = [
+  '3rdparty/crc/crc32.cpp', '3rdparty/md5/md5.cpp',
+  'handler/ExecuteCallbackHandler.cpp', 'handler/Handler.cpp',
+  'handler/RequestHandler.cpp', 'handler/ResponseCallbackHandler.cpp',
+  'legacy/LegacyNatives.cpp', 'legacy/threads/LegacyCommandThread.cpp',
+  'legacy/threads/LegacyDownloadThread.cpp', 'legacy/threads/LegacyFTPThread.cpp',
+  'legacy/threads/LegacyPageThread.cpp',
+  'legacy/threads/callbacks/LegacyCommandCallback.cpp',
+  'legacy/threads/callbacks/LegacyDownloadCallback.cpp',
+  'natives/CommonNatives.cpp', 'natives/ExecuteNatives.cpp',
+  'natives/FTPRequest.cpp', 'natives/HTTPRequest.cpp', 'natives/Request.cpp',
+  'natives/RequestNatives.cpp', 'natives/ResponseNatives.cpp', 'sdk/smsdk_ext.cpp',
+  'threads/CopyThread.cpp', 'threads/ExecuteThread.cpp', 'threads/FTPRequestThread.cpp',
+  'threads/HTTPRequestThread.cpp', 'threads/RequestThread.cpp', 'threads/Thread.cpp',
+  'threads/callbacks/CopyCallback.cpp', 'threads/callbacks/ExecuteCallback.cpp',
+  'threads/callbacks/FTPResponseCallback.cpp', 'threads/callbacks/HTTPResponseCallback.cpp',
+  'threads/callbacks/ProgressCallback.cpp', 'threads/callbacks/ResponseCallback.cpp',
+  'extension.cpp', os.path.join(sm, 'public/amtl/compat/stdcxx.cpp'),
+]
+libraries = [os.path.join(deps, 'lib', name) for name in [
+  'libcurl.a', 'libssl.a', 'libcrypto.a', 'libz.a', 'libidn2.a', 'libunistring.a',
+]]
+for library in libraries:
+  if not os.path.isfile(library):
+    raise Exception('Missing static dependency: ' + library)
+binary.compiler.linkdeps += libraries
+binary.compiler.postlink += libraries + ['-pthread', '-ldl', '-lrt', '-lm']
+binary.compiler.linkflags += [
+  '-static-libstdc++', '-static-libgcc', '-Wl,--exclude-libs,ALL',
+  '-Wl,-Bsymbolic-functions', '-Wl,-z,defs', '-Wl,-z,relro,-z,now',
+]
+builder.Add(binary)

@@ -46,7 +46,7 @@ public:
     LegacyDownloadThread(std::string url, std::string localFile, int data, std::shared_ptr<CallbackFunction_t> callbackFunction);
 
     static size_t WriteFile(void* buffer, size_t size, size_t nmemb, void* userdata);
-    static int ProgressUpdated(void* data, double dltotal, double dlnow, double ultotal, double ulnow);
+    static int ProgressUpdated(void* data, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
 
 protected:
     void Run();
